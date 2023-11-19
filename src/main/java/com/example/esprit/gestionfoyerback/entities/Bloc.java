@@ -1,5 +1,6 @@
 package com.example.esprit.gestionfoyerback.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,8 +21,10 @@ public class Bloc {
     private String nomBloc ;
     private long capaciteBloc ;
 
+    @JsonBackReference
     @ManyToOne
     private Foyer foyer ;
+
 
     @OneToMany(mappedBy = "bloc")
     private List<Chambre> chambres ;

@@ -1,6 +1,7 @@
 package com.example.esprit.gestionfoyerback.entities;
 
 import com.example.esprit.gestionfoyerback.enums.TypeChambre;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
