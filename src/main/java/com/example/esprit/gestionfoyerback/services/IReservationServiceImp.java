@@ -7,19 +7,15 @@ import com.example.esprit.gestionfoyerback.entities.Reservation;
 import com.example.esprit.gestionfoyerback.enums.TypeChambre;
 import com.example.esprit.gestionfoyerback.repository.BlocRepository;
 import com.example.esprit.gestionfoyerback.repository.ChambreRepository;
-import com.example.esprit.gestionfoyerback.repository.EtudiantRepository;
+import com.example.esprit.gestionfoyerback.repository.IEtudiantRepository;
 import com.example.esprit.gestionfoyerback.repository.ReservationRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.time.LocalDate;
-import java.time.Year;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 @Service
 @AllArgsConstructor
@@ -27,7 +23,7 @@ public class IReservationServiceImp implements IReservationService {
 
     final ReservationRepository reservationRepository;
     final ChambreRepository chambreRepository ;
-    final EtudiantRepository etudiantRepository ;
+    final IEtudiantRepository etudiantRepository ;
     final BlocRepository blocRepository ;
     @Override
     public List<Reservation> retrieveAllReservation() {

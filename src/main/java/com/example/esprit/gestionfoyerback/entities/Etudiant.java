@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -14,19 +14,22 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Etudiant {
+public class Etudiant extends User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
-    private long idEtudiant ;
-    private String nomEt ;
-    private String prenomEt ;
-    private long cin  ;
-    private String ecole ;
+    @Column(unique=true)
+    Long cin;
 
-    private Date dateNaissance ;
+    @Temporal(TemporalType.DATE)
+    LocalDate dateNaissance;
 
-    @ManyToMany(mappedBy = "etudiants")
-    private List<Reservation> reservations ;
+
+    @ManyToMany(mappedBy="etudiants")
+    @JsonIgnore
+    Set<Reservation> reservations;
+
+    @ManyToOne
+    @JoinColumn(name = "idUniversite")
+    Universite universite;
+
+
 }

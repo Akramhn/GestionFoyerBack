@@ -1,14 +1,11 @@
 package com.example.esprit.gestionfoyerback.repository;
 
-import com.example.esprit.gestionfoyerback.entities.Chambre;
-import com.example.esprit.gestionfoyerback.entities.Etudiant;
 import com.example.esprit.gestionfoyerback.entities.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface ReservationRepository extends JpaRepository <Reservation , String> {
 
