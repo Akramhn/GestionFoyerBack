@@ -15,4 +15,6 @@ public interface IReservationService  {
 
     public Reservation ajouterReservation (long idChambre, long cinEtudiant) ;
 
+    public Reservation annulerReservation (long cinEtudiant) ;
+
 }

@@ -11,6 +11,8 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("etudiant")
+@CrossOrigin(origins = "*" )
+
 public class EtudiantController {
     @Autowired
     private IEtudiantService iEtudiantService;

@@ -18,4 +18,6 @@ public interface IFoyerService  {
     void removeFoyer (long idFoyer);
 
     public Foyer ajouterFoyerEtAffecterAUniversite (Foyer foyer, long idUniversite) ;
+
+    public Foyer getFoyerByUniv(Universite universite);
 }

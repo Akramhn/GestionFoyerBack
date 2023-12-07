@@ -2,12 +2,16 @@ package com.example.esprit.gestionfoyerback.contollers;
 
 import com.example.esprit.gestionfoyerback.entities.Bloc;
 import com.example.esprit.gestionfoyerback.services.IBlocService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 @RestController
 @RequestMapping("bloc")
+@CrossOrigin(origins = "*" )
+@Slf4j
 public class BlocController {
     @Autowired
 
@@ -38,11 +42,20 @@ public class BlocController {
     public void removeBloc(@PathVariable long idBloc){
         iBlocService.removeBloc(idBloc);
     }
+    @GetMapping("cc/{date}")
+    public void dateTest(@PathVariable LocalDate date){
+        log.info(String.valueOf(date));
+    }
 
 
-    @PutMapping("{idBloc}")
-    public Bloc affecterChambresABloc(@RequestBody List<Long> numChambre,@PathVariable long idBloc){
+    @PutMapping("{idBloc}/{numChambre}")
+    public Bloc affecterChambresABloc(@PathVariable long numChambre,@PathVariable long idBloc){
         return iBlocService.affecterChambresABloc(numChambre,idBloc);
+    }
+
+    @GetMapping("bloc/{idFoyer}")
+    public List<Bloc> getBlocByFoyer(@PathVariable long idFoyer){
+        return iBlocService.getBlocByFoyer(idFoyer);
     }
 
 }

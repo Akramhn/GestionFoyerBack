@@ -4,10 +4,16 @@ import com.example.esprit.gestionfoyerback.entities.Universite;
 import com.example.esprit.gestionfoyerback.services.IUniversiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.List;
 @RestController
 @RequestMapping("universite")
+@CrossOrigin(origins = "*" )
 public class UniversiteController {
     @Autowired
     private IUniversiteService iUniversiteService;
@@ -17,9 +23,21 @@ public class UniversiteController {
     public List<Universite> retrieveAllUniversities(){
         return iUniversiteService.retrieveAllUniversities();
     }
-    @PostMapping
-    public Universite addUniversite(@RequestBody Universite u){
-        return iUniversiteService.addUniversite(u);
+    @PostMapping(consumes = "multipart/form-data")
+    public Universite addUniversite( @RequestParam("nomUni") String nom,@RequestParam("adresse") String adr, @RequestParam("image") MultipartFile image) throws IOException, SQLException {
+        Universite universite=new Universite();
+        universite.setNomUniversite(nom);
+        universite.setAdresse(adr);
+        byte[] fileBytes = image.getBytes();
+
+        // Convert the byte array to a Blob
+        Blob blob = new SerialBlob(fileBytes);
+
+        // Set the Blob in the Universite
+        universite.setImageUrl(blob);
+
+        // Save or process the Universite with the image
+        return iUniversiteService.addUniversite(universite);
     }
     @PutMapping
     public Universite updateUniversite(@RequestBody Universite u){

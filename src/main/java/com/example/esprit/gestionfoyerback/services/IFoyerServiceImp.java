@@ -51,21 +51,20 @@ public class IFoyerServiceImp implements IFoyerService {
     }
 
     @Override
-    public Foyer ajouterFoyerEtAffecterAUniversite(Foyer foyer, long idUniversite) {
-        Universite universite = universiteRepository.findById(idUniversite).orElse(null);
-        List<Bloc> blocs = foyer.getBlocs();
+    public Foyer ajouterFoyerEtAffecterAUniversite(Foyer foyer, long idUniversity) {
+        Universite universite = universiteRepository.findById(idUniversity).orElse(null);
         foyerRepository.save(foyer);
-        for(Bloc  bloc : blocs ){
-            bloc.setFoyer(foyer);
-
-        }
-        blocRepository.saveAll(blocs) ;
         universite.setFoyer(foyer);
-
         universiteRepository.save(universite);
+        return foyer;
+
+    }
+
+    @Override
+    public Foyer getFoyerByUniv(Universite universite) {
+        Foyer foyer = foyerRepository.findByUniversite(universite);
 
         return foyer ;
-
     }
 
 

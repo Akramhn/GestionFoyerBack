@@ -11,4 +11,7 @@ public interface IChambreService {
     Chambre updateChambre (Chambre  c);
 
     Chambre retrieveChambre (long idChambre);
+
+    void removeChambre (long idFoyer);
+
 }

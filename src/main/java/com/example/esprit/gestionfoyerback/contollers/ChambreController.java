@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequestMapping("chambre")
+@CrossOrigin(origins = "*" )
+
 public class ChambreController {
     @Autowired
     private IChambreService iChambreService;
@@ -29,6 +31,11 @@ public class ChambreController {
     @GetMapping("{idChambre}")
     public Chambre retrieveChambre(@PathVariable long idChambre){
         return iChambreService.retrieveChambre(idChambre);
+    }
+
+    @DeleteMapping("{idChambre}")
+    public void removeFoyer(@PathVariable long idChambre){
+        iChambreService.removeChambre(idChambre); ;
     }
 
 }

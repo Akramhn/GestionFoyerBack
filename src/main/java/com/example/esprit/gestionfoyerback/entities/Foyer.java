@@ -1,10 +1,13 @@
 package com.example.esprit.gestionfoyerback.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ext.SqlBlobSerializer;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.sql.Blob;
 import java.util.List;
 
 
@@ -21,11 +24,13 @@ public class Foyer {
     private long idFoyer ;
     private String nomFoyer ;
     private long capaciteFoyer ;
-
-    @OneToMany (mappedBy = "foyer")
+    @Lob
+    @JsonSerialize(using = SqlBlobSerializer.class)
+    private Blob imageUrl;
+    @JsonBackReference
+    @OneToMany (mappedBy = "foyer" , cascade = CascadeType.ALL)
     private List<Bloc> blocs ;
 
-
-    @OneToOne(mappedBy = "foyer")
+    @OneToOne(mappedBy = "foyer" )
     private Universite universite ;
 }

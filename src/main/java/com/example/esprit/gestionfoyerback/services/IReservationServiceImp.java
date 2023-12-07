@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -48,6 +49,9 @@ public class IReservationServiceImp implements IReservationService {
     @Override
     public Reservation ajouterReservation(long idChambre, long cinEtudiant) {
 
+        LocalDate startDate = LocalDate.of(LocalDate.now().getYear(),1,1);
+        LocalDate endDate =  LocalDate.of(LocalDate.now().getYear(),12,31);
+        Assert.isTrue(reservationRepository.existsByEtudiantsCinAndAnneeUnivirsitaireBetween(cinEtudiant ,startDate ,endDate ),"vous etes deja reservé");
             Chambre chambre = chambreRepository.findById(idChambre).orElseThrow(null);
             Etudiant etudiant = etudiantRepository.findEtudiantByCin(cinEtudiant);
 
@@ -98,7 +102,7 @@ public class IReservationServiceImp implements IReservationService {
                 } else {
                     res.setEstValide(true);
                 }
-                reservationRepository.save(res);
+                 reservationRepository.save(res);
 
 
             } else {
@@ -130,6 +134,15 @@ public class IReservationServiceImp implements IReservationService {
 
 
     return  res ;
+    }
+
+    @Override
+    @Transactional
+    public Reservation annulerReservation(long cinEtudiant) {
+        Reservation r = reservationRepository.getReservationByCinEt(cinEtudiant);
+        r.setEstValide(false);
+        r.setEtudiants(null);
+        return r ;
     }
 
 }

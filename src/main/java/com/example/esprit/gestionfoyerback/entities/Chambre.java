@@ -16,12 +16,12 @@ import java.util.List;
 public class Chambre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private long idChambre ;
     private long numeroChambre ;
 
     @Enumerated(EnumType.STRING)
     private TypeChambre typeC ;
+
 
     @ManyToOne
     private Bloc bloc ;

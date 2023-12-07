@@ -21,11 +21,10 @@ public class Bloc {
     private String nomBloc ;
     private long capaciteBloc ;
 
-    @JsonBackReference
     @ManyToOne
     private Foyer foyer ;
 
-
+    @JsonBackReference
     @OneToMany(mappedBy = "bloc")
     private List<Chambre> chambres ;
 
