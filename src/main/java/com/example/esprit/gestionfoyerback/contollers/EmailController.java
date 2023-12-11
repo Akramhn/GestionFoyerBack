@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/email")
-@CrossOrigin(origins = "*" )
+@CrossOrigin(origins = "*")
 public class EmailController {
 
     private final EmailService emailService;
@@ -19,9 +19,9 @@ public class EmailController {
     }
 
     @PostMapping("/send")
-    public String sendEmail(@RequestParam String to , @RequestParam String Subject ,@RequestParam String text) {
+    public String sendEmail(@RequestBody EmailRequest emailRequest) {
         try {
-            emailService.sendEmail(to, Subject, text);
+            emailService.sendEmail(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getText());
             return "Email sent successfully!";
         } catch (Exception e) {
             e.printStackTrace();

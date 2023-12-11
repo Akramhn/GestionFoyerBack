@@ -18,7 +18,8 @@ public interface IEtudiantRepository extends JpaRepository<Etudiant, Long> {
     Page<Etudiant> findByEmailContainingIgnoreCase(String searchTerm, Pageable pageable);
 
     Etudiant findEtudiantByCin(Long cin);
-    Page<Etudiant> findEtudiantsByRole(Role role, Pageable pageable);
-    List<Etudiant> findEtudiantByUniversite(Universite universite);
-}
 
+    Page<Etudiant> findEtudiantsByRole(Role role, Pageable pageable);
+List<Etudiant> findEtudiantByUniversite(Universite universite);
+
+}

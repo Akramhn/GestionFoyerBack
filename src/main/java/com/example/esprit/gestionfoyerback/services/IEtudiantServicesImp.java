@@ -1,6 +1,7 @@
 package com.example.esprit.gestionfoyerback.services;
 
 import com.example.esprit.gestionfoyerback.entities.Etudiant;
+import com.example.esprit.gestionfoyerback.entities.Role;
 import com.example.esprit.gestionfoyerback.repository.IEtudiantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,9 +55,7 @@ public class IEtudiantServicesImp implements IEtudiantServices {
                 if (etudiant.getEmail() != null) {
                     existingEtudiant.setEmail(etudiant.getEmail());
                 }
-                if (etudiant.getPassword() != null) {
-                    existingEtudiant.setPassword(etudiant.getPassword());
-                }
+
                 if (etudiant.getCin() != null) {
                     existingEtudiant.setCin(etudiant.getCin());
                 }
@@ -64,6 +63,7 @@ public class IEtudiantServicesImp implements IEtudiantServices {
                     existingEtudiant.setDateNaissance(etudiant.getDateNaissance());
                 }
                 if (etudiant.getUniversite() != null) {
+
                     existingEtudiant.setUniversite(etudiant.getUniversite());
                 }
                 if (etudiant.getReservations() != null) {
@@ -131,6 +131,17 @@ public class IEtudiantServicesImp implements IEtudiantServices {
     @Override
     public Page<Etudiant> getAllEtudiantsPage(Pageable pageable) {
         return etudiantRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Etudiant> getAllEtudiantsByRole(Role role, Pageable pageable) {
+        return etudiantRepository.findEtudiantsByRole(role, pageable);
+    }
+
+    @Override
+    public Etudiant addAdmin(Etudiant etudiant) {
+        etudiant.setRole(Role.ADMIN);
+        return etudiantRepository.save(etudiant);
     }
 }
 

@@ -1,6 +1,7 @@
 package com.example.esprit.gestionfoyerback.services;
 
 import com.example.esprit.gestionfoyerback.entities.Etudiant;
+import com.example.esprit.gestionfoyerback.entities.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,7 @@ import java.util.List;
 public interface IEtudiantServices {
     Etudiant addEtudiant(Etudiant etudiant);
     Etudiant updateEtudiant(Etudiant etudiant);
+
     List<Etudiant> getAllEtudiants();
     Etudiant getEtudiantById(Long idEtudiant);
     void deleteEtudiant(Long idEtudiant);
@@ -25,4 +27,7 @@ public interface IEtudiantServices {
 
 
     Page<Etudiant> getAllEtudiantsPage(Pageable pageable);
+
+    Page<Etudiant> getAllEtudiantsByRole(Role role, Pageable pageable);
+    Etudiant addAdmin(Etudiant etudiant);
 }

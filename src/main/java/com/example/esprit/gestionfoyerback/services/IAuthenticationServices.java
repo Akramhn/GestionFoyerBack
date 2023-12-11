@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 public interface IAuthenticationServices {
     Etudiant registerEtudiant(Etudiant etudiant);
+    Etudiant registerAdmin(Etudiant etudiant);
     AuthenticationResponse login(String email, String password);
     AuthenticationResponse refreshToken(RefreshTokenRequest refreshToken);
     HashMap<String,String> forgetPassword(String email);

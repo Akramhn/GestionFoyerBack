@@ -34,6 +34,11 @@ public class IAuthenticationServicesImp implements IAuthenticationServices {
         etudiant.setRole(Role.ETUDIANT);
         return etudiantRepository.save(etudiant);
     }
+    public Etudiant registerAdmin(Etudiant etudiant) {
+        etudiant.setPassword(passwordEncoder.encode(etudiant.getPassword()));
+        etudiant.setRole(Role.ADMIN);
+        return etudiantRepository.save(etudiant);
+    }
 
     public AuthenticationResponse login(String email, String password) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));

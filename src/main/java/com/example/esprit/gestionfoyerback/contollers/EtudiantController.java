@@ -1,7 +1,10 @@
 package com.example.esprit.gestionfoyerback.contollers;
 
 import com.example.esprit.gestionfoyerback.entities.Etudiant;
+import com.example.esprit.gestionfoyerback.entities.Role;
+import com.example.esprit.gestionfoyerback.entities.Universite;
 import com.example.esprit.gestionfoyerback.repository.IEtudiantRepository;
+import com.example.esprit.gestionfoyerback.services.IAuthenticationServices;
 import com.example.esprit.gestionfoyerback.services.IEtudiantServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,16 +17,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 @RequestMapping("/etudiant")
 @RequiredArgsConstructor
 public class EtudiantController {
 
     private final IEtudiantServices etudiantService;
-    private  final IEtudiantRepository etudiantRepository;
+    private final IAuthenticationServices authenticationServices;
 
     @PostMapping("/add")
     public Etudiant addEtudiant(@RequestBody Etudiant etudiant) {
@@ -39,14 +47,7 @@ public class EtudiantController {
     public List<Etudiant> getAllEtudiants() {
         return etudiantService.getAllEtudiants();
     }
-    @GetMapping("/usersperpage")
-    public Page<Etudiant> getAllStudent(@RequestParam(defaultValue = "0")  int page ,
-                                        @RequestParam(defaultValue = "10")  int size
-                                        ){
-        Pageable pageable = PageRequest.of(page, size);
-        return  etudiantService.getAllEtudiantsPage(pageable);
 
-    }
     @GetMapping("/{idEtudiant}")
     public Etudiant getEtudiantById(@PathVariable Long idEtudiant) {
         return etudiantService.getEtudiantById(idEtudiant);
@@ -71,16 +72,20 @@ public class EtudiantController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating image: " + e.getMessage());
         }
     }
-//    @GetMapping("/findByEmail/{email}")
-//    public Etudiant searchEtudiantByEmail(@RequestParam String email) {
-//
-//        return  etudiantService.getEtudiantByEmail(email);
-//
-//    }
+
     @GetMapping("/findByEmail")
     public Etudiant searchEtudiantByEmail(@RequestParam String email) {
         return etudiantService.getEtudiantByEmail(email);
     }
+    @GetMapping("/usersperpage")
+    public Page<Etudiant> getAllStudent(@RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size,
+                                        @RequestParam("role") Role role) {
+        Pageable pageable = PageRequest.of(page, size);
+        return etudiantService.getAllEtudiantsByRole(role, pageable);
+    }
+
+
 
 
 }
