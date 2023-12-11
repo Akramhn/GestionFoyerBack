@@ -14,4 +14,6 @@ public interface IChambreService {
 
     void removeChambre (long idFoyer);
 
+    List<Chambre> findChambresByBloc(long idBloc);
+
 }

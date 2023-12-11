@@ -11,6 +11,9 @@ import com.example.esprit.gestionfoyerback.repository.IEtudiantRepository;
 import com.example.esprit.gestionfoyerback.repository.ReservationRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Service
 @AllArgsConstructor
+@Slf4j
 public class IReservationServiceImp implements IReservationService {
 
     final ReservationRepository reservationRepository;
@@ -43,94 +47,64 @@ public class IReservationServiceImp implements IReservationService {
     }
 
     @Override
-    public Reservation ajouterReservation(long idChambre, long cinEtudiant) {
+    @Transactional
+    public ResponseEntity<String> ajouterReservation(long idChambre, long cinEtudiant) {
+        try {
+            LocalDate startDate = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+            LocalDate endDate = LocalDate.of(LocalDate.now().getYear(), 12, 31);
 
-        LocalDate startDate = LocalDate.of(LocalDate.now().getYear(),1,1);
-        LocalDate endDate =  LocalDate.of(LocalDate.now().getYear(),12,31);
-        Assert.isTrue(reservationRepository.existsByEtudiantsCinAndAnneeUnivirsitaireBetween(cinEtudiant ,startDate ,endDate ),"vous etes deja reservé");
-            Chambre chambre = chambreRepository.findById(idChambre).orElseThrow(null);
-            Etudiant etudiant = etudiantRepository.findEtudiantByCin(cinEtudiant);
-
-
-            Bloc bloc = blocRepository.findById(chambre.getBloc().getIdBloc()).orElseThrow();
-            Reservation chambreReserve = null ;
-            chambreReserve = reservationRepository.findByChambre(idChambre) ;
-
-        Reservation res =reservationRepository.findById(   String.valueOf(chambre.getNumeroChambre())+"-"+ bloc.getIdBloc() +"-"+ LocalDate.now().getYear()).orElse(null);
-            if(res==null) {
-                res = new Reservation();
-
-                res.setAnneeUnivirsitaire(LocalDate.of(LocalDate.now().getYear(), 8, 15));
-                res.setIdReservation(
-                        String.valueOf(chambre.getNumeroChambre()) + "-" + bloc.getIdBloc() + "-" + LocalDate.now().getYear()
-                );
-
+            // Check if the user already has a reservation
+            if (reservationRepository.existsByEtudiantsCinAndAnneeUnivirsitaireBetween(cinEtudiant, startDate, endDate)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You already have a reservation!");
             }
 
+            Chambre chambre = chambreRepository.findById(idChambre).orElseThrow(() -> new IllegalArgumentException("No room found"));
 
+            Etudiant etudiant = etudiantRepository.findByCin(cinEtudiant).orElseThrow(() -> new IllegalArgumentException("No student found"));
 
+            String id = chambre.getNumeroChambre() + "-" + chambre.getBloc().getNomBloc() + "-" + LocalDate.now().getYear();
 
-            if(chambreReserve == null || chambreReserve.getAnneeUnivirsitaire().getYear() < LocalDate.now().getYear() ){
-                if(chambre.getTypeC() == TypeChambre.SIMPLE){
-                    res.setEstValide(false);
-                }
-                else {
-                    res.setEstValide(true);
-                }
-                chambre.getReservations().add(res);
-                if (res.getEtudiants()==null)
-                {
-                    List<Etudiant>etudiants=new ArrayList<>();
-                    etudiants.add(etudiant);
-                    res.setEtudiants(etudiants);
-                }
-                else {
-                    res.getEtudiants().add(etudiant);
-                }
+            Reservation reservation = reservationRepository.findById(id).orElse(
+                    Reservation.builder()
+                            .idReservation(id)
+                            .anneeUnivirsitaire(LocalDate.now())
+                            .estValide(true)
+                            .etudiants(new ArrayList<>())
+                            .build()
+            );
 
+            Assert.isTrue(reservation.isEstValide(), "Room not available");
+            reservation.getEtudiants().add(etudiant);
 
-                reservationRepository.save(res);
-                chambreRepository.save(chambre);
-
-            } else if (res.getAnneeUnivirsitaire().getYear() < LocalDate.now().getYear()) {
-                if(chambre.getTypeC() == TypeChambre.SIMPLE){
-                    res.setEstValide(false);
-                } else {
-                    res.setEstValide(true);
-                }
-                 reservationRepository.save(res);
-
-
-            } else {
-                if(res.isEstValide() ){
-                    if(reservationRepository.getNumberReservation(res.getIdReservation()) ==  1 && chambre.getTypeC() == TypeChambre.DOUBLE){
-                        res.setEstValide(false);
-                        reservationRepository.save(res);
-
-                    } else if(reservationRepository.getNumberReservation(res.getIdReservation()) == 1 && chambre.getTypeC() == TypeChambre.TRIPLE){
-                        res.setEstValide(true);
-                        reservationRepository.save(res);
-                    }else{
-                        res.setEstValide(false);
-                    }
-                    if (res.getEtudiants()==null)
-                    {
-                        List<Etudiant>etudiants=new ArrayList<>();
-                        etudiants.add(etudiant);
-                        res.setEtudiants(etudiants);
-                    }
-                    else {
-                        res.getEtudiants().add(etudiant);
-                    }
-
-
-                    reservationRepository.save(res);
-                }
+            if (!chambre.getReservations().contains(reservation)) {
+                reservation = reservationRepository.save(reservation);
+                chambre.getReservations().add(reservation);
             }
 
+            switch (chambre.getTypeC()) {
+                case SIMPLE:
+                    reservation.setEstValide(false);
+                    break;
+                case DOUBLE:
+                    if (reservation.getEtudiants().size() == 2) {
+                        reservation.setEstValide(false);
+                    }
+                    break;
+                case TRIPLE:
+                    if (reservation.getEtudiants().size() == 3) {
+                        reservation.setEstValide(false);
+                    }
+                    break;
+            }
 
-    return  res ;
+            return ResponseEntity.ok("Reservation added successfully!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
+
 
     @Override
     @Transactional

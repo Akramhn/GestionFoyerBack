@@ -1,10 +1,11 @@
 package com.example.esprit.gestionfoyerback.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -12,20 +13,19 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Bloc {
+public class Participation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
-    private long idBloc ;
-    private String nomBloc ;
-    private long capaciteBloc ;
+    Long idParticipation;
 
+    LocalDate dateParticipation;
+    String nomEvenement;
     @ManyToOne
-    private Foyer foyer ;
+    private Etudiant etudiant ;
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "bloc",cascade = CascadeType.ALL)
-    private List<Chambre> chambres ;
+    @ManyToMany
+    private List<Evenement> evenement;
 
 }

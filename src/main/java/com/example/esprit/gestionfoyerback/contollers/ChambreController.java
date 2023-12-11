@@ -18,6 +18,11 @@ public class ChambreController {
     public List<Chambre> retrieveAllChambres(){
         return iChambreService.retrieveAllChambres();
     }
+
+    @GetMapping("ch/{idBloc}")
+    public List<Chambre> getChambreByBloc(@PathVariable long idBloc){
+        return iChambreService.findChambresByBloc(idBloc);
+    }
     @PostMapping
     public Chambre addChambre(@RequestBody Chambre c){
         return iChambreService.addChambre(c);

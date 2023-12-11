@@ -1,8 +1,10 @@
 package com.example.esprit.gestionfoyerback.services;
 
+import com.example.esprit.gestionfoyerback.entities.Etudiant;
 import com.example.esprit.gestionfoyerback.entities.Foyer;
 import com.example.esprit.gestionfoyerback.entities.Universite;
 import com.example.esprit.gestionfoyerback.repository.FoyerRepository;
+import com.example.esprit.gestionfoyerback.repository.IEtudiantRepository;
 import com.example.esprit.gestionfoyerback.repository.UniversiteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ public class IUniversiteServiceImp implements  IUniversiteService {
     UniversiteRepository universiteRepository;
     @Autowired
     FoyerRepository foyerRepository;
+    @Autowired
+    IEtudiantRepository etudiantRepository;
     @Override
     public List<Universite> retrieveAllUniversities() {
         return (List<Universite>) universiteRepository.findAll();
@@ -27,6 +31,7 @@ public class IUniversiteServiceImp implements  IUniversiteService {
 
     @Override
     public Universite updateUniversite(Universite u) {
+        u.setFoyer(universiteRepository.findById(u.getIdUniversite()).orElseThrow(null).getFoyer());
         return universiteRepository.save(u);
     }
 
@@ -57,5 +62,14 @@ public class IUniversiteServiceImp implements  IUniversiteService {
          return universite ;
 
 
+    }
+    @Override
+    @Transactional
+    public void removeUniversite(long idUniversite) {
+        Universite universite=universiteRepository.findById(idUniversite).orElseThrow(null);
+        List<Etudiant>etudiant=etudiantRepository.findEtudiantByUniversite(universite);
+        for (Etudiant et:etudiant)
+        et.setUniversite(null);
+        universiteRepository.deleteById(idUniversite);
     }
 }

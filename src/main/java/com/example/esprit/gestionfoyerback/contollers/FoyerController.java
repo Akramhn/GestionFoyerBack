@@ -2,9 +2,9 @@ package com.example.esprit.gestionfoyerback.contollers;
 
 import com.example.esprit.gestionfoyerback.entities.Foyer;
 import com.example.esprit.gestionfoyerback.entities.Universite;
+import com.example.esprit.gestionfoyerback.repository.FoyerRepository;
 import com.example.esprit.gestionfoyerback.services.IFoyerService;
 import com.example.esprit.gestionfoyerback.services.IUniversiteService;
-import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,6 +26,7 @@ public class FoyerController {
     @Autowired
     private IFoyerService foyerService ;
     private IUniversiteService iUniversiteService ;
+    private FoyerRepository foyerRepository;
 
     @GetMapping
     public List<Foyer> retrieveAllFoyers(){
@@ -39,7 +40,7 @@ public class FoyerController {
 
     @PutMapping
     public Foyer updateFoyer(@RequestBody Foyer f){
-        return foyerService.updateFoyer(f) ;
+        return foyerService.addFoyer(f) ;
     }
 
     @GetMapping("{idFoyer}")
@@ -71,5 +72,23 @@ public class FoyerController {
         Universite universite = iUniversiteService.retrieveUniversite(universiteId);
 
         return foyerService.getFoyerByUniv(universite);
+    }
+
+
+    @PutMapping(path = "{idfoyer}/{iduni}",consumes = "multipart/form-data")
+    public Foyer updateFoyerAvecAffectation(@RequestParam("nomFoyer") String nom,@RequestParam("cap") int cap,@RequestParam("image") MultipartFile image,@PathVariable long idfoyer,@PathVariable long iduni) throws IOException, SQLException {
+        Foyer foyer=new Foyer();
+        foyer.setIdFoyer(idfoyer);
+        foyer.setNomFoyer(nom);
+        foyer.setCapaciteFoyer(cap);
+        byte[] fileBytes = image.getBytes();
+        // Convert the byte array to a Blob
+        Blob blob = new SerialBlob(fileBytes);
+
+        // Set the Blob in the Universite
+        foyer.setImageUrl(blob);
+
+        // Save or process the Universite with the image
+        return foyerService.updateFoyer(foyer,iduni);
     }
 }

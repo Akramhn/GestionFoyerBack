@@ -26,7 +26,7 @@ public class Chambre {
     @ManyToOne
     private Bloc bloc ;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Reservation> reservations ;
 
 }

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 public interface ReservationRepository extends JpaRepository <Reservation , String> {
 
-   public Boolean existsByEtudiantsCinAndAnneeUnivirsitaireBetween(long etudiants_cin, LocalDate startDate, LocalDate endDate);
+    boolean existsByEtudiantsCinAndAnneeUnivirsitaireBetween(Long etudiants_cin, LocalDate anneeUnivirsitaire, LocalDate anneeUnivirsitaire2);
     @Query(value = "SELECT * FROM `reservation` r JOIN chambre_reservations cr WHERE r.id_reservation = cr.reservations_id_reservation AND cr.chambre_id_chambre = :idChambre ",nativeQuery = true)
    public  Reservation findByChambre(@Param("idChambre") Long idChambre);
     @Query(value = "SELECT COUNT(*) FROM `reservation_etudiants` WHERE reservations_id_reservation = :ReservationId ",nativeQuery = true)

@@ -11,13 +11,15 @@ public interface IFoyerService  {
 
     Foyer addFoyer (Foyer f);
 
-    Foyer updateFoyer (Foyer f);
+    Foyer updateFoyer (Foyer f, long idUni);
 
     Foyer retrieveFoyer (long  idFoyer);
 
     void removeFoyer (long idFoyer);
 
     public Foyer ajouterFoyerEtAffecterAUniversite (Foyer foyer, long idUniversite) ;
+
+    Foyer mettreAjourFoyerEtAffecterAUniversite(Foyer foyer, long idNouvelleUniversite);
 
     public Foyer getFoyerByUniv(Universite universite);
 }

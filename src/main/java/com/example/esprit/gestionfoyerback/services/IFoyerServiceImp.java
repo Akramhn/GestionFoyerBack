@@ -1,6 +1,5 @@
 package com.example.esprit.gestionfoyerback.services;
 
-import com.example.esprit.gestionfoyerback.entities.Bloc;
 import com.example.esprit.gestionfoyerback.entities.Foyer;
 import com.example.esprit.gestionfoyerback.entities.Universite;
 import com.example.esprit.gestionfoyerback.repository.BlocRepository;
@@ -8,7 +7,6 @@ import com.example.esprit.gestionfoyerback.repository.FoyerRepository;
 import com.example.esprit.gestionfoyerback.repository.UniversiteRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,9 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 public class IFoyerServiceImp implements IFoyerService {
 
- private final   FoyerRepository foyerRepository;
- private final   UniversiteRepository universiteRepository;
- private final BlocRepository blocRepository ;
+    private final   FoyerRepository foyerRepository;
+    private final   UniversiteRepository universiteRepository;
+    private final BlocRepository blocRepository ;
 
 
     @Override
@@ -35,8 +33,14 @@ public class IFoyerServiceImp implements IFoyerService {
     }
 
     @Override
-    public Foyer updateFoyer(Foyer f) {
-        return foyerRepository.save(f);
+    public Foyer updateFoyer(Foyer f,long idUni) {
+        foyerRepository.save(f);
+        Universite  universite=universiteRepository.findById(idUni).orElseThrow(null);
+        universite.setFoyer(f);
+        System.out.println(idUni);
+        universiteRepository.save(universite);
+        return f;
+
     }
 
     @Override
@@ -59,6 +63,27 @@ public class IFoyerServiceImp implements IFoyerService {
         return foyer;
 
     }
+
+    @Override
+    public Foyer mettreAjourFoyerEtAffecterAUniversite(Foyer foyer, long idNouvelleUniversite) {
+        Universite nouvelleUniversite = universiteRepository.findById(idNouvelleUniversite).orElseThrow(null);
+
+        Universite ancienneUniversite = foyer.getUniversite();
+
+        if (ancienneUniversite != null) {
+            ancienneUniversite.setFoyer(null);
+            universiteRepository.save(ancienneUniversite);
+        }
+
+        foyer.setUniversite(nouvelleUniversite);
+        foyerRepository.save(foyer);
+
+        nouvelleUniversite.setFoyer(foyer);
+        universiteRepository.save(nouvelleUniversite);
+
+        return foyer;
+    }
+
 
     @Override
     public Foyer getFoyerByUniv(Universite universite) {

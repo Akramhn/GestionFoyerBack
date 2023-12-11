@@ -20,14 +20,15 @@ import java.sql.Blob;
 public class Universite {
  @Id
  @GeneratedValue(strategy = GenerationType.IDENTITY)
- @Setter(AccessLevel.NONE)
  private long idUniversite ;
  private String nomUniversite ;
   private String adresse ;
+ private String description ;
  @Lob
  @JsonSerialize(using = SqlBlobSerializer.class)
  private Blob imageUrl;
+
  @JsonBackReference
- @OneToOne(fetch = FetchType.EAGER) // par defaut exist
+ @OneToOne(fetch = FetchType.EAGER , cascade = CascadeType.ALL) // par defaut exist
   private Foyer foyer ;
 }

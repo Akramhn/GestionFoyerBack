@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface IUniversiteService {
     List<Universite> retrieveAllUniversities();
+    void removeUniversite (long idUniversite);
+
 
     Universite addUniversite (Universite u);
 

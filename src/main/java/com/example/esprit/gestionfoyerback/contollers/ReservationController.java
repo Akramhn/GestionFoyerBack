@@ -6,6 +6,7 @@ import com.example.esprit.gestionfoyerback.services.IReservationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,8 +37,8 @@ public class ReservationController {
     }
 
     @PostMapping("{idChambre}/{cinEtudiant}")
-    public Reservation ajouterReservation(@PathVariable long idChambre, @PathVariable long cinEtudiant){
-        return iReservationService.ajouterReservation(idChambre , cinEtudiant);
+    public ResponseEntity<String> ajouterReservation(@PathVariable long idChambre, @PathVariable long cinEtudiant) {
+        return iReservationService.ajouterReservation(idChambre, cinEtudiant);
     }
 
 }
